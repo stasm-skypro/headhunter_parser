@@ -3,6 +3,8 @@ import json
 import os
 from abc import ABC, abstractmethod
 
+import pandas as pd
+
 from src.headhunter_api import HeadHunterAPI
 
 
@@ -48,17 +50,31 @@ class CsvWriter(FileWorker):
                 writer.writerow(row_dict)
 
 
+class ExcelWriter(FileWorker):
+    def __init__(self, file_name):
+        self.file_name = file_name
+
+    def write_file(self, data):
+        df = pd.DataFrame(data)
+        full_path = os.path.abspath(self.file_name)
+        df.to_excel(full_path, index=False)
+
 
 if __name__ == "__main__":
     hh_api = HeadHunterAPI(url="https://api.hh.ru/vacancies", per_page=100)
     hh_vacancies = hh_api.load_vacancies(keyword="Python", pages=1)
 
     # Запишем в json-файл
-    # print("Запишем в json-файл", end='\n')
-    # fileworker = JsonWriter("../data/data.json")
-    # fileworker.write_file(hh_vacancies)
+    print("Запишем в json-файл", end='\n')
+    fileworker = JsonWriter("../data/data.json")
+    fileworker.write_file(hh_vacancies)
 
     # Запишем в csv-файл
     print("Запишем в csv-файл", end='\n')
     fileworker = CsvWriter("../data/data.csv")
+    fileworker.write_file(hh_vacancies)
+
+    # Запишем в Excel-файл
+    print("Запишем в Excel-файл", end='\n')
+    fileworker = ExcelWriter("../data/data.xlsx")
     fileworker.write_file(hh_vacancies)
