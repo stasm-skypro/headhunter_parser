@@ -1,20 +1,20 @@
+
 import requests
 
 from src.base_api import BaseAPI
 
 
 class HeadHunterAPI(BaseAPI):
-    """
-    Класс для работы с API HeadHunter
-    """
+    """Класс для работы с API HeadHunter."""
 
     def __init__(self, url="https://api.hh.ru/vacancies", per_page=1):
         """
         Инициализатор экземпляра класса.
-        :param url: URL-адрес для GET-запроса. По умолчанию "https://api.hh.ru/vacancies" - все сайты группы компаний
+        :param url: URL-адрес для GET-запроса. По умолчанию "https://api.hh.ru/vacancies" - все сайты группы компаний.
         HeadHunter. Возможны варианты выбора ...api.hh.kz/... или ...api.headhunter.kg/... (Подробнее в документации
         на сайте компании).
-        :param per_page: Количество вакансий на странице. По умолчанию - 1 (Подробнее в документации на сайте компании).
+        :param per_page: Количество вакансий на странице. По умолчанию - 1 (Подробнее в документации на сайте
+        компании).
         """
         self.url = url
         self.headers = {"User-Agent": "HH-User-Agent"}
@@ -57,4 +57,4 @@ if __name__ == "__main__":
     # -----------------------------------------------------------------------------------------------------------------
     hh_vacancies = hh_api.load_vacancies(keyword="Python", pages=1)
     for vacancy in hh_vacancies:
-        print(vacancy, end='\n')
+        print(vacancy, end="\n")

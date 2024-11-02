@@ -1,36 +1,44 @@
-from src.validations import Validation
-
-
 class Vacancy:
     """Класс вакансий. Экземпляр класса представляет собой объект, созданный из элементов JSON-файла, полученного
     в результате запроса на сайт вакансий."""
+
     id: str
     name: str
     url: str
     salary_from: int
     salary_to: int
     requirement: str
-    vacancies_list = []
+    vacancies_list: list = []
 
-    def __init__(self, personal_data: dict) -> None:
+    def __init__(self, params: dict) -> None:
         """Инициализация экземпляра класса."""
-        self.id = personal_data["id"]
-        self.name = personal_data["name"]
-        self.url = personal_data["apply_alternate_url"]
-        self.salary_from = personal_data["salary"]["from"]
-        self.salary_to = personal_data["salary"]["to"]
-        self.currency = personal_data["salary"]['currency']
-        self.requirement = personal_data["snippet"]["requirement"]
+        self.name = params['name']
+        self.__salary_from = params['salary_from']
+        self.__salary_to = params['salary_to']
+        self.currency = params['currency']
+        self.published_at = params['published_at']
+        self.archived = params['archived']
+        self.url = params['url']
+        self.requirement = params['requirement']
+        self.responsibility = params['responsibility']
         # Добавляем вакансию в общий список вакансий
         Vacancy.vacancies_list.append(self)
 
     def __str__(self) -> str:
         """Выводит строковое представление экземпляра класса."""
-        return f"ID: {self.id}, НЗВАНИЕ: {self.name}, URL: {self.url}, ЗАРПЛАТА: {self.salary_from} - {self.salary_to} руб, ТРЕБОВАНИЯ: {self.requirement}"
+        return f"НАЗВАНИЕ: {self.name}, ЗАРПЛАТА: {self.__salary_from} - {self.__salary_to} руб, URL: {self.url}, ОПУБЛИКОВАН: {self.published_at}, ТРЕБОВАНИЯ: {self.requirement}, КОМПЕТЕНЦИИ: {self.responsibility}"
+
+    def __repr__(self):
+        """Выводит альтенативное строковк представление экземпляра класса."""
+        return f"{self.__dict__}"
 
     def __eq__(self, other) -> bool:
         """Осуществляет сравнение экземпляров класса по трём параметрам: начальной зарплате, конечной зарплате и валюте."""
-        return self.salary_from == other.salary_from and self.salary_to == other.salary_to and self.currency == other.currency
+        return (
+                self.__salary_from == other.__salary_from
+                and self.__salary_to == other.__salary_to
+                and self.currency == other.currency
+        )
 
     @classmethod
     def cast_to_object_list(cls, personal_data: list) -> list:
@@ -40,6 +48,10 @@ class Vacancy:
 
 
 if __name__ == "__main__":
+    from src.validator import Validator
+
+    validator = Validator()
+
     print("Создадим первую вакансию")
     pd1 = {
         "id": "93353083",
@@ -96,10 +108,10 @@ if __name__ == "__main__":
         "is_adv_vacancy": False,
         "adv_context": None,
     }
-    validator = Validation()
     validated_pd1 = validator.validate(pd1)
-    vacancy1 = Vacancy(pd1)
+    vacancy1 = Vacancy(validated_pd1)
     print(vacancy1)
+    print(repr(vacancy1))
     print()
 
     print("Создадим вторую вакансию")
@@ -160,6 +172,7 @@ if __name__ == "__main__":
     validated_pd2 = validator.validate(pd2)
     vacancy2 = Vacancy(validated_pd2)
     print(vacancy2)
+    print(repr(vacancy2))
     print()
 
     print("Сравним две вакансии по зарплате")

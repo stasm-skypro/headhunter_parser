@@ -5,45 +5,49 @@ from abc import ABC, abstractmethod
 
 import pandas as pd
 
-from src.headhunter_api import HeadHunterAPI
-
 
 class FileWorker(ABC):
     """Класс для работы с файлами: записи в файл данных и чтения данных из файла."""
 
     @abstractmethod
-    def write_file(self, data):
+    def write_file(self, data: list):
+        """Абстрактный метод для записи списка словарей в файл. Подлежит переопределению в классе-наследнике."""
         ...
 
 
 class JsonWriter(FileWorker):
+    """Класс для записи списка словарей в json-файл."""
 
-    def __init__(self, file_name):
+    def __init__(self, file_name: str) -> None:
+        """Инициализатор экземпляра класса."""
         self.file_name = file_name
 
-    def write_file(self, data):
+    def write_file(self, data: list) -> None:
+        """Записывает список словарей в json-файл."""
         full_path = os.path.abspath(self.file_name)
-        with open(full_path, "w", encoding='UTF-8') as file:
+        with open(full_path, "w", encoding="UTF-8") as file:
             json.dump(data, file, ensure_ascii=False)
 
 
 class CsvWriter(FileWorker):
-    def __init__(self, file_name):
+    """Класс для записи списка словарей в csv-файл."""
+
+    def __init__(self, file_name: str) -> None:
+        """Инициализатор экземпляра класса."""
         self.file_name = file_name
 
     @staticmethod
-    def get_field_names(data):
-        result = []
-        for key in data[0].keys():
-            result.append(key)
+    def get_field_names(data: list) -> list:
+        """Создаёт список заголовков csv-файла."""
+        result = [key for key in data[0].keys()]
+        result.extend(["show_logo_in_search", "branding"])
         return result
 
-    def write_file(self, data):
+    def write_file(self, data: list) -> None:
+        """Записывает список словарей в csv-файл."""
         field_names = self.get_field_names(data)
-        field_names.extend(['show_logo_in_search', 'branding'])
-
         full_path = os.path.abspath(self.file_name)
-        with open(full_path, "w", newline='', encoding='UTF-8') as file:
+        with open(full_path, "w", newline="", encoding="UTF-8") as file:
             writer = csv.DictWriter(file, fieldnames=field_names)
             writer.writeheader()
             for row_dict in data:
@@ -51,30 +55,40 @@ class CsvWriter(FileWorker):
 
 
 class ExcelWriter(FileWorker):
-    def __init__(self, file_name):
+    """Класс для записи списка словарей в xlsx-файл."""
+
+    def __init__(self, file_name: str) -> None:
         self.file_name = file_name
 
-    def write_file(self, data):
+    def write_file(self, data: list) -> None:
+        """Записывает список словарей в xlsx-файл."""
         df = pd.DataFrame(data)
         full_path = os.path.abspath(self.file_name)
         df.to_excel(full_path, index=False)
 
 
 if __name__ == "__main__":
+    from src.headhunter_api import HeadHunterAPI
+    from src.validator import Validator
+
     hh_api = HeadHunterAPI(url="https://api.hh.ru/vacancies", per_page=100)
     hh_vacancies = hh_api.load_vacancies(keyword="Python", pages=1)
 
+    validator = Validator()
+    # Из исходного списка словарей, полученных из API, соберём новый список словарей с выбранными ключами.
+    reformated_vacancies = [validator.validate(item) for item in hh_vacancies]
+
     # Запишем в json-файл
-    print("Запишем в json-файл", end='\n')
+    print("Запишем в json-файл", end="\n")
     fileworker = JsonWriter("../data/data.json")
-    fileworker.write_file(hh_vacancies)
+    fileworker.write_file(reformated_vacancies)
 
     # Запишем в csv-файл
-    print("Запишем в csv-файл", end='\n')
+    print("Запишем в csv-файл", end="\n")
     fileworker = CsvWriter("../data/data.csv")
-    fileworker.write_file(hh_vacancies)
+    fileworker.write_file(reformated_vacancies)
 
     # Запишем в Excel-файл
-    print("Запишем в Excel-файл", end='\n')
+    print("Запишем в Excel-файл", end="\n")
     fileworker = ExcelWriter("../data/data.xlsx")
-    fileworker.write_file(hh_vacancies)
+    fileworker.write_file(reformated_vacancies)
