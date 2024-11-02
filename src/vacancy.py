@@ -13,8 +13,8 @@ class Vacancy:
     def __init__(self, params: dict) -> None:
         """Инициализация экземпляра класса."""
         self.name = params['name']
-        self.__salary_from = params['salary_from']
-        self.__salary_to = params['salary_to']
+        self.salary_from = params['salary_from']
+        self.salary_to = params['salary_to']
         self.currency = params['currency']
         self.published_at = params['published_at']
         self.archived = params['archived']
@@ -26,7 +26,7 @@ class Vacancy:
 
     def __str__(self) -> str:
         """Выводит строковое представление экземпляра класса."""
-        return f"НАЗВАНИЕ: {self.name}, ЗАРПЛАТА: {self.__salary_from} - {self.__salary_to} руб, URL: {self.url}, ОПУБЛИКОВАН: {self.published_at}, ТРЕБОВАНИЯ: {self.requirement}, КОМПЕТЕНЦИИ: {self.responsibility}"
+        return f"НАЗВАНИЕ: {self.name}, ЗАРПЛАТА: {self.salary_from} - {self.salary_to} руб, URL: {self.url}, ОПУБЛИКОВАН: {self.published_at}, ТРЕБОВАНИЯ: {self.requirement}, КОМПЕТЕНЦИИ: {self.responsibility}"
 
     def __repr__(self):
         """Выводит альтенативное строковк представление экземпляра класса."""
@@ -35,8 +35,8 @@ class Vacancy:
     def __eq__(self, other) -> bool:
         """Осуществляет сравнение экземпляров класса по трём параметрам: начальной зарплате, конечной зарплате и валюте."""
         return (
-                self.__salary_from == other.__salary_from
-                and self.__salary_to == other.__salary_to
+                self.salary_from == other.salary_from
+                and self.salary_to == other.salary_to
                 and self.currency == other.currency
         )
 
