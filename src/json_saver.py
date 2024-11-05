@@ -5,16 +5,16 @@ from src.vacancy import Vacancy
 class JsonSaver:
     """Класс принимает объект класса Vacancy. Из параметров экземпляра класса Vacancy создаётся json-объект."""
 
+    json_list = []
+
     def __init__(self):
         pass
 
-    @staticmethod
-    def add_vacancy(vacancy: Vacancy, json_list = None):
-        if json_list is None:
-            json_list = []
+    @classmethod
+    def add_vacancy(cls, vacancy: Vacancy) -> None:
+        """Метод создаёт json-объект из экземпляра класса Vacancy."""
         json_object = vacancy.__dict__
-        json_list.append(json_object)
-        return json_list
+        cls.json_list.append(json_object)
 
 
 if __name__ == "__main__":
@@ -145,15 +145,21 @@ if __name__ == "__main__":
     print(repr(vacancy2))
     print()
 
+    print("Создадим конструктор класса JsonSaver")
     json_saver = JsonSaver()
-    json_data = json_saver.add_vacancy(vacancy1)
-    json_data = json_saver.add_vacancy(vacancy2, json_data)
+    print("Запишем первый экземпляр класса Vacancy в json-объект")
+    json_saver.add_vacancy(vacancy1)
+    print("Добавим второй экземпляр класса Vacancy в json-объект")
+    json_saver.add_vacancy(vacancy2)
 
-    json_writer = JsonWriter("../data/data2.json")
-    json_writer.write_file(json_data)
+    print("Запишем полученный json-объект в json-файл")
+    json_writer = JsonWriter("../data/data.json")
+    json_writer.write_file(json_saver.json_list)
 
-    csv_writer = CsvWriter("../data/data2.csv")
-    csv_writer.write_file(json_data)
+    print("Запишем полученный json-объект в csv-файл")
+    csv_writer = CsvWriter("../data/data.csv")
+    csv_writer.write_file(json_saver.json_list)
 
-    xlsx_writer = ExcelWriter("../data/data2.xlsx")
-    xlsx_writer.write_file(json_data)
+    print("Запишем полученный json-объект в excel-файл")
+    excel_writer = ExcelWriter("../data/data.xlsx")
+    excel_writer.write_file(json_saver.json_list)

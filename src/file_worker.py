@@ -14,6 +14,14 @@ class FileWorker(ABC):
         """Абстрактный метод для записи списка словарей в файл. Подлежит переопределению в классе-наследнике."""
         ...
 
+    # @abstractmethod
+    # def get_data_from_file(self, filter_words: list[str]) -> list:
+    #     """Абстрактный метод для получения данных из файла по критериям"""
+    #
+    # @abstractmethod
+    # def delete_data_from_file(self,  id: str) -> None:
+    #     """Абстрактный метод для удаления данных из файла"""
+
 
 class JsonWriter(FileWorker):
     """Класс для записи списка словарей в json-файл."""
@@ -40,7 +48,7 @@ class CsvWriter(FileWorker):
     def get_field_names(data: list) -> list:
         """Создаёт список заголовков csv-файла."""
         result = [key for key in data[0].keys()]
-        result.extend(["show_logo_in_search", "branding"])
+
         return result
 
     def write_file(self, data: list) -> None:
@@ -71,24 +79,25 @@ if __name__ == "__main__":
     from src.headhunter_api import HeadHunterAPI
     from src.validator import Validator
 
+    print("Получим сырые данные из API")
     hh_api = HeadHunterAPI(url="https://api.hh.ru/vacancies", per_page=100)
     hh_vacancies = hh_api.load_vacancies(keyword="Python", pages=1)
 
     validator = Validator()
     # Из исходного списка словарей, полученных из API, соберём новый список словарей с выбранными ключами.
-    reformated_vacancies = [validator.validate(item) for item in hh_vacancies]
+    validated_vacancies = [validator.validate(item) for item in hh_vacancies]
 
     # Запишем в json-файл
     print("Запишем в json-файл", end="\n")
-    fileworker = JsonWriter("../data/data.json")
-    fileworker.write_file(reformated_vacancies)
+    json_worker = JsonWriter("../data/data.json")
+    json_worker.write_file(validated_vacancies)
 
     # Запишем в csv-файл
     print("Запишем в csv-файл", end="\n")
-    fileworker = CsvWriter("../data/data.csv")
-    fileworker.write_file(reformated_vacancies)
+    csv_worker = CsvWriter("../data/data.csv")
+    csv_worker.write_file(validated_vacancies)
 
     # Запишем в Excel-файл
     print("Запишем в Excel-файл", end="\n")
-    fileworker = ExcelWriter("../data/data.xlsx")
-    fileworker.write_file(reformated_vacancies)
+    excel_worker = ExcelWriter("../data/data.xlsx")
+    excel_worker.write_file(validated_vacancies)

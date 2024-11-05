@@ -2,49 +2,89 @@ class Vacancy:
     """Класс вакансий. Экземпляр класса представляет собой объект, созданный из элементов JSON-файла, полученного
     в результате запроса на сайт вакансий."""
 
-    id: str
-    name: str
-    url: str
-    salary_from: int
-    salary_to: int
-    requirement: str
     vacancies_list: list = []
 
     def __init__(self, params: dict) -> None:
         """Инициализация экземпляра класса."""
-        self.name = params['name']
-        self.salary_from = params['salary_from']
-        self.salary_to = params['salary_to']
-        self.currency = params['currency']
-        self.published_at = params['published_at']
-        self.archived = params['archived']
-        self.url = params['url']
-        self.requirement = params['requirement']
-        self.responsibility = params['responsibility']
+        self.id = params["id"]
+        self.name = params["name"]
+        self.salary_from = params["salary_from"]
+        self.salary_to = params["salary_to"]
+        self.currency = params["currency"]
+        self.published_at = params["published_at"]
+        self.archived = params["archived"]
+        self.url = params["url"]
+        self.requirement = params["requirement"]
+        self.responsibility = params["responsibility"]
         # Добавляем вакансию в общий список вакансий
         Vacancy.vacancies_list.append(self)
 
     def __str__(self) -> str:
         """Выводит строковое представление экземпляра класса."""
-        return f"НАЗВАНИЕ: {self.name}, ЗАРПЛАТА: {self.salary_from} - {self.salary_to} руб, URL: {self.url}, ОПУБЛИКОВАН: {self.published_at}, ТРЕБОВАНИЯ: {self.requirement}, КОМПЕТЕНЦИИ: {self.responsibility}"
+        return f"ID {self.id}, НАЗВАНИЕ: {self.name}, ЗАРПЛАТА: {self.salary_from} - {self.salary_to} руб, URL: {self.url}, ОПУБЛИКОВАН: {self.published_at}, ТРЕБОВАНИЯ: {self.requirement}, КОМПЕТЕНЦИИ: {self.responsibility}"
 
     def __repr__(self):
-        """Выводит альтенативное строковк представление экземпляра класса."""
+        """Выводит альтернативное строковое представление экземпляра класса."""
         return f"{self.__dict__}"
 
     def __eq__(self, other) -> bool:
-        """Осуществляет сравнение экземпляров класса по трём параметрам: начальной зарплате, конечной зарплате и валюте."""
+        """Осуществляет сравнение экземпляров класса по трём параметрам: начальной зарплате, конечной зарплате и \
+        валюте: они равны?"""
         return (
-                self.salary_from == other.salary_from
+                self.currency == other.currency
+                and self.salary_from == other.salary_from
                 and self.salary_to == other.salary_to
-                and self.currency == other.currency
+        )
+
+    def __lt__(self, other) -> bool:
+        """Осуществляет сравнение экземпляров класса по трём параметрам: начальной зарплате, конечной зарплате и \
+        валюте: первый меньше, чем второй?"""
+        return (
+                self.currency == other.currency
+                and self.salary_from < other.salary_from
+                and self.salary_to < other.salary_to
+        )
+
+    def __gt__(self, other) -> bool:
+        """Осуществляет сравнение экземпляров класса по трём параметрам: начальной зарплате, конечной зарплате и \
+        валюте: первый больше, чем второй?"""
+        return (
+                self.currency == other.currency
+                and self.salary_from > other.salary_from
+                and self.salary_to > other.salary_to
         )
 
     @classmethod
-    def cast_to_object_list(cls, personal_data: list) -> list:
+    def cast_to_object_list(cls, vacancies_data: list) -> None:
         """Осуществляет списковое создание экземпляров класса."""
-        result = [cls(item) for item in personal_data]
-        return result
+        for data_item in vacancies_data:
+            cls(data_item)
+
+    @classmethod
+    def print_vacancies_list(cls, top=None) -> None:
+        """Выводит на экран список вакансий"""
+        if top is None:
+            counter = float('inf')
+        else:
+            counter = 0
+        for vacancy in cls.vacancies_list:
+            print(vacancy)
+            counter += 1
+            if counter == top:
+                break
+
+    @classmethod
+    def sort_vacancies_by_criteria(cls, key_word: str) -> None:
+        """Сортирует список вакансий по заданному критерию."""
+        __vacancies_list = [current_vacancy.__dict__ for current_vacancy in cls.vacancies_list]
+        try:
+            __sorted_vacancies_list = sorted(__vacancies_list, key=lambda x: x[key_word], reverse=True)
+        except KeyError:
+            print(f"Ключевое слово '{key_word}' не найдено в списке вакансий!")
+
+        cls.vacancies_list = []
+        for __current_vacancy in __sorted_vacancies_list:
+            cls(__current_vacancy)
 
 
 if __name__ == "__main__":
@@ -179,11 +219,13 @@ if __name__ == "__main__":
     print(vacancy1 == vacancy2)
     print()
 
-    print("Длинна списка вакансий")
-    print(len(Vacancy.vacancies_list))
+    print("Список вакансий формируется внутри класса")
+    print("Выведем его в консоль")
+    Vacancy.print_vacancies_list()
     print()
 
-    print("Создадим список объектов вакансий", end=" ")
+    print("Внутри класса Vacancy из json-объекта создадим список объектов вакансий и выведем его на экран")
+    print("Есть список сырых вакансий, полученных из API")
     hh_vacancies = [
         {
             "id": "93353083",
@@ -1359,9 +1401,17 @@ if __name__ == "__main__":
         },
     ]
 
-    validated_hh_vacancies = [validator.validate(item) for item in hh_vacancies]
-    vacancies_list = Vacancy.cast_to_object_list(validated_hh_vacancies)
+    print("Проведём валидацию этого списка и внутри класса Vacancy создадим экземпляры класса")
+    validated_vacancies = [validator.validate(item) for item in hh_vacancies]
+    Vacancy.cast_to_object_list(validated_vacancies)
 
-    print("и выведем его на экран")
-    for vacancy in vacancies_list:
-        print(vacancy)
+    print("Выведем на экран в виде списка созданные вакансии")
+    print(Vacancy.print_vacancies_list())
+
+    print("Выведем на экран список вакансий отсортированных по зарплате")
+    Vacancy.sort_vacancies_by_criteria("salary_from")
+    print(Vacancy.print_vacancies_list())
+
+    n = 5
+    print(f"Выведем на экран список из ТОП-{n} вакансий")
+    Vacancy.print_vacancies_list(5)
