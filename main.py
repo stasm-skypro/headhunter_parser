@@ -1,12 +1,13 @@
-from src.file_worker import JsonWriter, CsvWriter, ExcelWriter
+from src.file_worker import JsonWorker, CsvWorker, ExcelWorker
 from src.headhunter_api import HeadHunterAPI
 from src.json_saver import JsonSaver
-from src.vacancy import Vacancy
-from src.validator import Validator
+from src.vacancy import Validator, Vacancy
 
 from tqdm import tqdm
 
 import time
+
+BASE_URL = "https://api.hh.ru/vacancies"
 
 # Пример работы конструктора класса с одной вакансией
 print("#" + "*" * 100)
@@ -169,31 +170,31 @@ print("Добавим второй экземпляр класса Vacancy в js
 json_saver.add_vacancy(vacancy2)
 
 print("Запишем полученный json-объект в json-файл")
-json_writer = JsonWriter("data/data.json")
+json_worker = JsonWorker("data/data.json")
 try:
-    json_writer.write_file(json_saver.json_list)
+    json_worker.write_file(json_saver.json_list)
 except Exception as e:
     print(e)
 else:
-    print(f"Файл {"data/data2.json"} успешно записан")
+    print(f"Файл {"data/data.json"} успешно записан")
 
 print("Запишем полученный json-объект в csv-файл")
-csv_writer = CsvWriter("data/data.csv")
+csv_worker = CsvWorker("data/data.csv")
 try:
-    csv_writer.write_file(json_saver.json_list)
+    csv_worker.write_file(json_saver.json_list)
 except Exception as e:
     print(e)
 else:
-    print(f"Файл {"data/data2.csv"} успешно записан")
+    print(f"Файл {"data/data.csv"} успешно записан")
 
 print("Запишем полученный json-объект в excel-файл")
-excel_writer = ExcelWriter("data/data.xlsx")
+excel_worker = ExcelWorker("data/data.xlsx")
 try:
-    excel_writer.write_file(json_saver.json_list)
+    excel_worker.write_file(json_saver.json_list)
 except Exception as e:
     print(e)
 else:
-    print(f"Файл {"data/data2.xlsx"} успешно записан")
+    print(f"Файл {"data/data.xlsx"} успешно записан")
 finally:
     print("Работа file_worker завершена")
 print()
@@ -207,48 +208,53 @@ print("#" + "*" * 100)
 print()
 
 
-def user_interaction():
+def user_interaction() -> None:
+    """
+    Функция взаимодействует с пользователем.
+    @return: None
+    """
+    # Блок получения от пользователя входных данных
+    # -----------------------------------------------------------------------------------------------------------------
     print("Сначала запросим у пользователя входные данные для запроса")
     time.sleep(2)
+    user_input = input("Введите поисковый запрос (default 'Python') >>: ")  # Пример: "Python"
+    keyword = "Python" if not user_input else user_input
 
-    user_input = input("Введите поисковый запрос (default 'Python') >>: ")  # "Python"
-    search_query = user_input if user_input else "Python"
-    time.sleep(2)
+    user_input = input("Ведите количество желаемых страниц (default 100) >>: ")
+    vacancies_number = 100 if not user_input else int(user_input)
 
-    user_input = input("Ведите количество желаемых страниц (default 1) >>: ")
-    page_number = int(user_input) if user_input else 1
-    time.sleep(2)
+    user_input = input("Введите количество вакансий для вывода в топ N по зарплате (default 5) >>: ")
+    top_n = 5 if not user_input else user_input
 
-    user_input = input("Введите количество вакансий для вывода в топ N (default 1) >>: ")
-    top_n = int(user_input) if user_input else 1
-    time.sleep(2)
+    user_input = input(
+        "Введите ключевые слова для фильтрации вакансий (Пример: back-end стажер) >>: "
+    ).split()  # Пример: back-end стажер
+    filter_words = ["back-end", "стажер"] if not user_input else user_input
 
-    filter_words = input("Введите ключевые слова для фильтрации вакансий >>: ").split()
-    salary_range = input("Введите диапазон зарплат: ")  # Пример: 100000 - 150000
+    user_input = input("Введите диапазон зарплат (Пример: 100000 - 150000) >>: ")  # Пример: 100000 - 150000
+    salary_range = "100000 - 150000" if not user_input else user_input
+    print()
+    # -----------------------------------------------------------------------------------------------------------------
 
     print("Задача 1 - Подключимся к API и получим вакансии")
     print("Создадим экземпляр класса для работы с API сайтов с вакансиями")
     # Создание экземпляра класса для работы с API сайтов с вакансиями
-    # -----------------------------------------------------------------------------------------------------------------
     # url = "https://api.hh.ru/vacancies" определяет, что поиск вакансий будет производиться на всех сайтах группы
     # компаний HeadHunter. Если необходимо локализовать поиск, то можно использовать варианты:
     # "https://api.hh.kz/vacancies"
     # "https://api.headhunter.kg/vacancies" т.д. Подробнее в документации на сайте компании.
-    # -----------------------------------------------------------------------------------------------------------------
     print("Получим сырые данные из API")
     try:
-        hh_api = HeadHunterAPI(url="https://api.hh.ru/vacancies", per_page=100)
+        hh_api = HeadHunterAPI(url=BASE_URL, per_page=vacancies_number)
     except ConnectionError:
         print("Дальше нет смысла... Выходим")
         exit(1)
 
     # Получение вакансий с hh.ru в формате JSON
-    # -----------------------------------------------------------------------------------------------------------------
-    # Аргумент keyword определяет слово, по которому будет осуществлён поиск.
+    # Аргумент query, полученный от пользователя, определяет слово, по которому будет осуществлён поиск.
     # Аргумент pages определяет количество страниц, в которых будет осуществлён поиск.
-    # -----------------------------------------------------------------------------------------------------------------
     print("Загрузим вакансии из API в json-объект")
-    hh_vacancies = hh_api.load_vacancies(keyword=search_query, pages=page_number)
+    hh_vacancies = hh_api.load_vacancies(keyword=keyword)
 
     print("Выведем элементы полученного json-объекта по одному для демонстрации")
     for vacancy in hh_vacancies:
@@ -261,60 +267,63 @@ def user_interaction():
     validated_vacancies = [validator.validate(item) for item in hh_vacancies]
     Vacancy.cast_to_object_list(validated_vacancies)
     print("и выведем его на экран")
-    print(Vacancy.print_vacancies_list())
+    print(Vacancy.print_obj_vacancies_list())
 
     # Запишем экземпляры класса Vacancy в json-объект
     print("Запишем экземпляры класса Vacancy в json-объект")
-    for vacancy in Vacancy.vacancies_list:
+    for vacancy in Vacancy.obj_vacancies_list:
         json_saver.add_vacancy(vacancy)
 
     # Запишем в json-файл
-    print("Запишем в json-файл", end="\n")
-    fileworker = JsonWriter("data/data.json")
+    print("Запишем полученный json-объект в json-файл", end="\n")
     try:
-        fileworker.write_file(json_saver.json_list)
+        json_worker.write_file(json_saver.json_list)
         for _ in tqdm(range(100)):
             time.sleep(0.02)
-    except Exception as e:
-        print(e)
+    except Exception as ex:
+        print(ex)
     else:
         print(f"Файл {"data/data.json"} успешно записан")
 
     # Запишем в csv-файл
     print("Запишем в csv-файл", end="\n")
-    fileworker = CsvWriter("data/data.csv")
     try:
-        fileworker.write_file(json_saver.json_list)
+        csv_worker.write_file(json_saver.json_list)
         for _ in tqdm(range(100)):
             time.sleep(0.02)
-    except Exception as e:
-        print(e)
+    except Exception as ex:
+        print(ex)
     else:
         print(f"Файл {"data/data.csv"} успешно записан")
 
     # Запишем в Excel-файл
     print("Запишем в Excel-файл", end="\n")
-    fileworker = ExcelWriter("data/data.xlsx")
     try:
-        fileworker.write_file(json_saver.json_list)
+        excel_worker.write_file(json_saver.json_list)
         for _ in tqdm(range(100)):
             time.sleep(0.02)
-    except Exception as e:
-        print(e)
+    except Exception as ex:
+        print(ex)
     else:
         print(f"Файл {"data/data.xlsx"} успешно записан")
     finally:
         print("Работа file_worker завершена")
     print()
 
-    # Отсортируем вакансии по заработной плате
-    print("Выведем на экран список вакансий отсортированных по зарплате")
-    Vacancy.sort_vacancies_by_criteria("salary_from")
-    print(Vacancy.print_vacancies_list())
+    # Выведем на экран список ТОП вакансий отсортированных по заработной плате
+    print(f"Отсортируем вакансии по заработной плате и выведем на экран ТОП-{top_n} вакансий")
+    Vacancy.sort_vacancies_by_keyword("salary_from", top_n)
+    print()
 
-    # Выведем на экран ТОП вакансий
-    print(f"Выведем на экран ТОП-{top_n} вакансий")
-    Vacancy.print_vacancies_list(top_n)
+    # Выведем на экран список вакансий отфильтрованных по ключевым словам
+    print(f"Выведем на экран список вакансий отфильтрованных по словам {filter_words}")
+    Vacancy.filter_vacancies_by_keyword(filter_words)
+    print()
+
+    # Выведем на экран список вакансий отфильтрованный по диапазону зарплат
+    print(f"Выведем на экран список вакансий отфильтрованных по диапазону зарплат {salary_range}")
+    Vacancy.filter_vacancies_by_salary_diapason(salary_range)
+    print()
 
 
 if __name__ == "__main__":

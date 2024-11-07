@@ -1,24 +1,25 @@
-from src.file_worker import JsonWriter, CsvWriter, ExcelWriter
+from src.file_worker import JsonWorker, CsvWorker, ExcelWorker
 from src.vacancy import Vacancy
 
 
 class JsonSaver:
     """Класс принимает объект класса Vacancy. Из параметров экземпляра класса Vacancy создаётся json-объект."""
 
-    json_list = []
-
-    def __init__(self):
-        pass
+    json_list: list[dict] = []  # Список вакансий
 
     @classmethod
     def add_vacancy(cls, vacancy: Vacancy) -> None:
-        """Метод создаёт json-объект из экземпляра класса Vacancy."""
+        """
+        Метод создаёт json-объект из экземпляра класса Vacancy.
+        @param vacancy: Экземпляр класса Vacancy (одна вакансия).
+        @return: None
+        """
         json_object = vacancy.__dict__
         cls.json_list.append(json_object)
 
 
 if __name__ == "__main__":
-    from src.validator import Validator
+    from src.vacancy import Validator
 
     validator = Validator()
 
@@ -61,8 +62,10 @@ if __name__ == "__main__":
             "trusted": True,
         },
         "snippet": {
-            "requirement": "Занимать активную жизненную позицию, уметь активно танцевать и громко петь. Обладать навыками коммуникации, чтобы налаживать добрососедские отношения. Обладать системным мышлением...",
-            "responsibility": "Оценивать вид из окна: встречать рассветы на кухне, и провожать алые закаты в спальне. Оценивать инфраструктуру района: ежедневно ходить на...",
+            "requirement": "Занимать активную жизненную позицию, уметь активно танцевать и громко петь. Обладать \
+            навыками коммуникации, чтобы налаживать добрососедские отношения. Обладать системным мышлением...",
+            "responsibility": "Оценивать вид из окна: встречать рассветы на кухне, и провожать алые закаты в спальне. \
+            Оценивать инфраструктуру района: ежедневно ходить на...",
         },
         "contacts": None,
         "schedule": {"id": "flexible", "name": "Гибкий график"},
@@ -122,8 +125,10 @@ if __name__ == "__main__":
             "trusted": True,
         },
         "snippet": {
-            "requirement": "Способен работать в команде. Способен принимать решения самостоятельно. Готов учиться и узнавать новое. Опыт работы в колл-центре или службе...",
-            "responsibility": "Работать с клиентами или партнерами для решения разнообразных ситуаций. Совершать звонки по их обращениям и давать письменные ответы. ",
+            "requirement": "Способен работать в команде. Способен принимать решения самостоятельно. Готов учиться и \
+            узнавать новое. Опыт работы в колл-центре или службе...",
+            "responsibility": "Работать с клиентами или партнерами для решения разнообразных ситуаций. Совершать \
+            звонки по их обращениям и давать письменные ответы. ",
         },
         "contacts": None,
         "schedule": {"id": "remote", "name": "Удаленная работа"},
@@ -153,13 +158,13 @@ if __name__ == "__main__":
     json_saver.add_vacancy(vacancy2)
 
     print("Запишем полученный json-объект в json-файл")
-    json_writer = JsonWriter("../data/data.json")
-    json_writer.write_file(json_saver.json_list)
+    json_worker = JsonWorker("../data/data.json")
+    json_worker.write_file(json_saver.json_list)
 
     print("Запишем полученный json-объект в csv-файл")
-    csv_writer = CsvWriter("../data/data.csv")
-    csv_writer.write_file(json_saver.json_list)
+    csv_worker = CsvWorker("../data/data.csv")
+    csv_worker.write_file(json_saver.json_list)
 
     print("Запишем полученный json-объект в excel-файл")
-    excel_writer = ExcelWriter("../data/data.xlsx")
-    excel_writer.write_file(json_saver.json_list)
+    excel_worker = ExcelWorker("../data/data.xlsx")
+    excel_worker.write_file(json_saver.json_list)
