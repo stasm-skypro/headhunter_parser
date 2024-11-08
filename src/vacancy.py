@@ -40,7 +40,6 @@ class Validator:
         new_vacancy_params = {}
         for key, value in vacancy_params.items():
             if key in __slots__:
-
                 if key == "salary":
                     if vacancy_params[key] is None:
                         new_vacancy_params["salary_from"] = 0
@@ -62,8 +61,12 @@ class Validator:
                         new_vacancy_params["requirement"] = 0
                         new_vacancy_params["responsibility"] = 0
                     else:
-                        new_vacancy_params["requirement"] = vacancy_params[key]["requirement"]
-                        new_vacancy_params["responsibility"] = vacancy_params[key]["responsibility"]
+                        new_vacancy_params["requirement"] = vacancy_params[key][
+                            "requirement"
+                        ]
+                        new_vacancy_params["responsibility"] = vacancy_params[key][
+                            "responsibility"
+                        ]
 
                 elif key == "apply_alternate_url":
                     new_vacancy_params["url"] = value
@@ -110,7 +113,7 @@ class Vacancy:
             f"КОМПЕТЕНЦИИ: {self.responsibility}"
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Выводит альтернативное строковое представление экземпляра класса.
         @return: Альтернативное строковое представление (develop) экземпляра класса.
@@ -179,7 +182,9 @@ class Vacancy:
             print(vacancy)
 
     @staticmethod
-    def print_vacancies_list(data: list[dict], rows_to_print: int | None = None) -> None:
+    def print_vacancies_list(
+        data: list[dict], rows_to_print: int | None = None
+    ) -> None:
         """
         Выводит на экран список вакансий (список словарей).
         @param data: Список вакансий (список словарей).
@@ -218,7 +223,9 @@ class Vacancy:
             cls(current_dict)
 
     @classmethod
-    def sort_vacancies_by_keyword(cls, key_word: str, top_n: int = 1, save_result: bool = False) -> None:
+    def sort_vacancies_by_keyword(
+        cls, key_word: str, top_n: int = 1, save_result: bool = False
+    ) -> None:
         """
         Сортирует список вакансий по заданному ключевому слову.
         @param key_word: Определяет ключ, по которому будет производиться сортировка.
@@ -232,7 +239,9 @@ class Vacancy:
 
         # Производим сортировку
         try:
-            sorted_vacancies_list = sorted(tmp_vacancies_list, key=lambda x: x[key_word], reverse=True)
+            sorted_vacancies_list = sorted(
+                tmp_vacancies_list, key=lambda x: x[key_word], reverse=True
+            )
         except KeyError:
             print(f"Ключевое слово '{key_word}' не найдено в списке вакансий!")
         else:
@@ -245,7 +254,9 @@ class Vacancy:
             cls.__list_dicts_to_obj_vacancies_list(sorted_vacancies_list)
 
     @classmethod
-    def filter_vacancies_by_keyword(cls, words: list[str], save_result: bool = False) -> None:
+    def filter_vacancies_by_keyword(
+        cls, words: list[str], save_result: bool = False
+    ) -> None:
         """
         Фильтрует список вакансий по заданному ключевому слову.
         @param words: Ключевые слова, по которым будет производиться фильтрование.
@@ -274,7 +285,9 @@ class Vacancy:
             cls.__list_dicts_to_obj_vacancies_list(filtered_vacancies_list)
 
     @classmethod
-    def filter_vacancies_by_salary_diapason(cls, srange: str, save_result: bool = False) -> None:
+    def filter_vacancies_by_salary_diapason(
+        cls, srange: str, save_result: bool = False
+    ) -> None:
         """
         Фильтрует список вакансий по диапазону зарплат.
         @param srange: Определяет диапазон зарплат.
@@ -289,7 +302,9 @@ class Vacancy:
         try:
             left, right = srange.split("-")
             for vacancy in tmp_vacancies_list:
-                if vacancy["salary_from"] == int(left.strip()) and vacancy["salary_to"] == int(right.strip()):
+                if vacancy["salary_from"] == int(left.strip()) and vacancy[
+                    "salary_to"
+                ] == int(right.strip()):
                     filtered_vacancies_list.append(vacancy)
         except KeyError:
             print(f"Диапазон {srange} не найден в списке вакансий!")
@@ -417,7 +432,9 @@ if __name__ == "__main__":
         "schedule": {"id": "remote", "name": "Удаленная работа"},
         "working_days": [],
         "working_time_intervals": [],
-        "working_time_modes": [{"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}],
+        "working_time_modes": [
+            {"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}
+        ],
         "accept_temporary": False,
         "professional_roles": [{"id": "40", "name": "Другое"}],
         "accept_incomplete_resumes": True,
@@ -442,7 +459,9 @@ if __name__ == "__main__":
     Vacancy.print_obj_vacancies_list()
     print()
 
-    print("Внутри класса Vacancy из json-объекта создадим список объектов вакансий и выведем его на экран")
+    print(
+        "Внутри класса Vacancy из json-объекта создадим список объектов вакансий и выведем его на экран"
+    )
     print("Есть список сырых вакансий, полученных из API")
     hh_vacancies = [
         {
@@ -452,7 +471,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "26", "name": "Воронеж", "url": "https://api.hh.ru/areas/26"},
+            "area": {
+                "id": "26",
+                "name": "Воронеж",
+                "url": "https://api.hh.ru/areas/26",
+            },
             "salary": {"from": 350000, "to": 450000, "currency": "RUR", "gross": False},
             "type": {"id": "open", "name": "Открытая"},
             "address": None,
@@ -483,11 +506,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Занимать активную жизненную позицию, уметь активно танцевать и громко петь. \
-                Обладать навыками коммуникации, чтобы налаживать добрососедские отношения. Обладать системным \
-                мышлением...",
-                "responsibility": "Оценивать вид из окна: встречать рассветы на кухне, и провожать алые закаты в \
-                спальне. Оценивать инфраструктуру района: ежедневно ходить на...",
+                "requirement": "Занимать активную жизненную позицию, уметь активно танцевать и громко петь. Обладать навыками коммуникации, чтобы налаживать добрососедские отношения. Обладать системным мышлением...",
+                "responsibility": "Оценивать вид из окна: встречать рассветы на кухне, и провожать алые закаты в спальне. Оценивать инфраструктуру района: ежедневно ходить на...",
             },
             "contacts": None,
             "schedule": {"id": "flexible", "name": "Гибкий график"},
@@ -510,7 +530,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "113", "name": "Россия", "url": "https://api.hh.ru/areas/113"},
+            "area": {
+                "id": "113",
+                "name": "Россия",
+                "url": "https://api.hh.ru/areas/113",
+            },
             "salary": {"from": 30000, "to": 44000, "currency": "RUR", "gross": True},
             "type": {"id": "open", "name": "Открытая"},
             "address": None,
@@ -540,16 +564,19 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Способен работать в команде. Способен принимать решения самостоятельно. Готов \
-                учиться и узнавать новое. Опыт работы в колл-центре или службе...",
-                "responsibility": "Работать с клиентами или партнерами для решения разнообразных ситуаций. Совершать \
-                звонки по их обращениям и давать письменные ответы. ",
+                "requirement": "Способен работать в команде. Способен принимать решения самостоятельно. Готов учиться и узнавать новое. Опыт работы в колл-центре или службе...",
+                "responsibility": "Работать с клиентами или партнерами для решения разнообразных ситуаций. Совершать звонки по их обращениям и давать письменные ответы. ",
             },
             "contacts": None,
             "schedule": {"id": "remote", "name": "Удаленная работа"},
             "working_days": [],
             "working_time_intervals": [],
-            "working_time_modes": [{"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}],
+            "working_time_modes": [
+                {
+                    "id": "start_after_sixteen",
+                    "name": "Можно начинать работать после 16:00",
+                }
+            ],
             "accept_temporary": False,
             "professional_roles": [{"id": "40", "name": "Другое"}],
             "accept_incomplete_resumes": True,
@@ -566,7 +593,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "113", "name": "Россия", "url": "https://api.hh.ru/areas/113"},
+            "area": {
+                "id": "113",
+                "name": "Россия",
+                "url": "https://api.hh.ru/areas/113",
+            },
             "salary": {"from": 30000, "to": 44000, "currency": "RUR", "gross": True},
             "type": {"id": "open", "name": "Открытая"},
             "address": None,
@@ -596,16 +627,19 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Способен работать в команде. Способен принимать решения самостоятельно. Готов \
-                учиться и узнавать новое. Опыт работы в колл-центре или службе...",
-                "responsibility": "Работать с клиентами или партнерами для решения разнообразных ситуаций. Совершать \
-                звонки по их обращениям и давать письменные ответы. ",
+                "requirement": "Способен работать в команде. Способен принимать решения самостоятельно. Готов учиться и узнавать новое. Опыт работы в колл-центре или службе...",
+                "responsibility": "Работать с клиентами или партнерами для решения разнообразных ситуаций. Совершать звонки по их обращениям и давать письменные ответы. ",
             },
             "contacts": None,
             "schedule": {"id": "remote", "name": "Удаленная работа"},
             "working_days": [],
             "working_time_intervals": [],
-            "working_time_modes": [{"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}],
+            "working_time_modes": [
+                {
+                    "id": "start_after_sixteen",
+                    "name": "Можно начинать работать после 16:00",
+                }
+            ],
             "accept_temporary": False,
             "professional_roles": [{"id": "40", "name": "Другое"}],
             "accept_incomplete_resumes": True,
@@ -622,7 +656,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "159", "name": "Астана", "url": "https://api.hh.ru/areas/159"},
+            "area": {
+                "id": "159",
+                "name": "Астана",
+                "url": "https://api.hh.ru/areas/159",
+            },
             "salary": {"from": 500000, "to": 1000000, "currency": "KZT", "gross": True},
             "type": {"id": "open", "name": "Открытая"},
             "address": None,
@@ -652,10 +690,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Отличные коммуникативные навыки, способность найти подход к каждому клиенту. Навыки \
-                проведения деловых переговоров. Наличие амбициозных целей и успешный опыт их...",
-                "responsibility": "Анализ рынка и объектов недвижимости. Предварительная оценка недвижимости. Подбор \
-                объектов недвижимости в интересах клиентов. Консультирование клиентов по купле-продаже объектов...",
+                "requirement": "Отличные коммуникативные навыки, способность найти подход к каждому клиенту. Навыки проведения деловых переговоров. Наличие амбициозных целей и успешный опыт их...",
+                "responsibility": "Анализ рынка и объектов недвижимости. Предварительная оценка недвижимости. Подбор объектов недвижимости в интересах клиентов. Консультирование клиентов по купле-продаже объектов...",
             },
             "contacts": None,
             "schedule": {"id": "fullDay", "name": "Полный день"},
@@ -678,7 +714,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "113", "name": "Россия", "url": "https://api.hh.ru/areas/113"},
+            "area": {
+                "id": "113",
+                "name": "Россия",
+                "url": "https://api.hh.ru/areas/113",
+            },
             "salary": {"from": 30000, "to": 44000, "currency": "RUR", "gross": True},
             "type": {"id": "open", "name": "Открытая"},
             "address": None,
@@ -708,16 +748,19 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Способен работать в команде. Способен принимать решения самостоятельно. Готов \
-                учиться и узнавать новое. Опыт работы в колл-центре или службе...",
-                "responsibility": "Работать с клиентами или партнерами для решения разнообразных ситуаций. Совершать \
-                звонки по их обращениям и давать письменные ответы. ",
+                "requirement": "Способен работать в команде. Способен принимать решения самостоятельно. Готов учиться и узнавать новое. Опыт работы в колл-центре или службе...",
+                "responsibility": "Работать с клиентами или партнерами для решения разнообразных ситуаций. Совершать звонки по их обращениям и давать письменные ответы. ",
             },
             "contacts": None,
             "schedule": {"id": "remote", "name": "Удаленная работа"},
             "working_days": [],
             "working_time_intervals": [],
-            "working_time_modes": [{"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}],
+            "working_time_modes": [
+                {
+                    "id": "start_after_sixteen",
+                    "name": "Можно начинать работать после 16:00",
+                }
+            ],
             "accept_temporary": False,
             "professional_roles": [{"id": "40", "name": "Другое"}],
             "accept_incomplete_resumes": True,
@@ -734,7 +777,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "2759", "name": "Ташкент", "url": "https://api.hh.ru/areas/2759"},
+            "area": {
+                "id": "2759",
+                "name": "Ташкент",
+                "url": "https://api.hh.ru/areas/2759",
+            },
             "salary": None,
             "type": {"id": "open", "name": "Открытая"},
             "address": None,
@@ -764,10 +811,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Образование: среднее полное (11 классов), среднее специальное, высшее. Обязательное \
-                владение узбекским, русским и английским языками. Готовность работать согласно графику полетов. ",
-                "responsibility": "Обеспечение безопасности на борту. Встреча и размещение пассажиров на борту. \
-                Инструктаж перед взлетом. Организация питания пассажиров во время полета. ",
+                "requirement": "Образование: среднее полное (11 классов), среднее специальное, высшее. Обязательное владение узбекским, русским и английским языками. Готовность работать согласно графику полетов. ",
+                "responsibility": "Обеспечение безопасности на борту. Встреча и размещение пассажиров на борту. Инструктаж перед взлетом. Организация питания пассажиров во время полета. ",
             },
             "contacts": None,
             "schedule": {"id": "fullDay", "name": "Полный день"},
@@ -790,7 +835,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "1002", "name": "Минск", "url": "https://api.hh.ru/areas/1002"},
+            "area": {
+                "id": "1002",
+                "name": "Минск",
+                "url": "https://api.hh.ru/areas/1002",
+            },
             "salary": {"from": 800, "to": None, "currency": "BYR", "gross": False},
             "type": {"id": "open", "name": "Открытая"},
             "address": None,
@@ -820,10 +869,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "уверенное владение ПЭВМ (программы OCR - FineReader и аналоги, глубокое знание \
-                функций MS Word - Вставка, Макет, Конструктор таблиц). - возможность и готовность...",
-                "responsibility": "выполнение распознания документов в формате ,pdf, .jpg, .png на русском / \
-                английском языке, макетирование и форматирование в MS Word. - ",
+                "requirement": "уверенное владение ПЭВМ (программы OCR - FineReader и аналоги, глубокое знание функций MS Word - Вставка, Макет, Конструктор таблиц). - возможность и готовность...",
+                "responsibility": "выполнение распознания документов в формате ,pdf, .jpg, .png на русском / английском языке, макетирование и форматирование в MS Word. - ",
             },
             "contacts": None,
             "schedule": {"id": "remote", "name": "Удаленная работа"},
@@ -834,9 +881,16 @@ if __name__ == "__main__":
                     "name": "Можно работать сменами по\xa04–6 часов в\xa0день",
                 }
             ],
-            "working_time_modes": [{"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}],
+            "working_time_modes": [
+                {
+                    "id": "start_after_sixteen",
+                    "name": "Можно начинать работать после 16:00",
+                }
+            ],
             "accept_temporary": False,
-            "professional_roles": [{"id": "84", "name": "Оператор ПК, оператор базы данных"}],
+            "professional_roles": [
+                {"id": "84", "name": "Оператор ПК, оператор базы данных"}
+            ],
             "accept_incomplete_resumes": False,
             "experience": {"id": "noExperience", "name": "Нет опыта"},
             "employment": {"id": "part", "name": "Частичная занятость"},
@@ -893,8 +947,7 @@ if __name__ == "__main__":
             },
             "snippet": {
                 "requirement": "Опыт в продажах. Опыт работы с клиентами. Умение проводить переговоры. Мобильность.",
-                "responsibility": "Расширение клиентской базы. Проведение презентаций и переговоров. Заключение \
-                договоров. Отчетность в установленной форме.",
+                "responsibility": "Расширение клиентской базы. Проведение презентаций и переговоров. Заключение договоров. Отчетность в установленной форме.",
             },
             "contacts": None,
             "schedule": {"id": "fullDay", "name": "Полный день"},
@@ -902,7 +955,12 @@ if __name__ == "__main__":
             "working_time_intervals": [],
             "working_time_modes": [],
             "accept_temporary": False,
-            "professional_roles": [{"id": "70", "name": "Менеджер по продажам, менеджер по работе с клиентами"}],
+            "professional_roles": [
+                {
+                    "id": "70",
+                    "name": "Менеджер по продажам, менеджер по работе с клиентами",
+                }
+            ],
             "accept_incomplete_resumes": False,
             "experience": {"id": "between1And3", "name": "От 1 года до 3 лет"},
             "employment": {"id": "full", "name": "Полная занятость"},
@@ -917,8 +975,17 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "2759", "name": "Ташкент", "url": "https://api.hh.ru/areas/2759"},
-            "salary": {"from": 3500000, "to": 20000000, "currency": "UZS", "gross": True},
+            "area": {
+                "id": "2759",
+                "name": "Ташкент",
+                "url": "https://api.hh.ru/areas/2759",
+            },
+            "salary": {
+                "from": 3500000,
+                "to": 20000000,
+                "currency": "UZS",
+                "gross": True,
+            },
             "type": {"id": "open", "name": "Открытая"},
             "address": None,
             "response_url": None,
@@ -942,12 +1009,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Пожалуйста ознакомьтесь внимательно. Грамотная речь. Знание узбекского и русского \
-                языков. Отличное знание ПК. Коммуникабельность. Эмоциональная устойчивость. Вежливость, грамотность, \
-                любознательность, ответственность...",
-                "responsibility": "Прием и обработка входящих звонков и исходящих звонков. Консультирование \
-                клиентов по телефону. Предоставление клиентам информации о компании. Осуществление исходящих \
-                информационных...",
+                "requirement": "Пожалуйста ознакомьтесь внимательно. Грамотная речь. Знание узбекского и русского языков. Отличное знание ПК. Коммуникабельность. Эмоциональная устойчивость. Вежливость, грамотность, любознательность, ответственность...",
+                "responsibility": "Прием и обработка входящих звонков и исходящих звонков. Консультирование клиентов по телефону. Предоставление клиентам информации о компании. Осуществление исходящих информационных...",
             },
             "contacts": None,
             "schedule": {"id": "fullDay", "name": "Полный день"},
@@ -955,7 +1018,12 @@ if __name__ == "__main__":
             "working_time_intervals": [],
             "working_time_modes": [],
             "accept_temporary": False,
-            "professional_roles": [{"id": "83", "name": "Оператор call-центра, специалист контактного центра"}],
+            "professional_roles": [
+                {
+                    "id": "83",
+                    "name": "Оператор call-центра, специалист контактного центра",
+                }
+            ],
             "accept_incomplete_resumes": True,
             "experience": {"id": "between1And3", "name": "От 1 года до 3 лет"},
             "employment": {"id": "full", "name": "Полная занятость"},
@@ -970,7 +1038,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "159", "name": "Астана", "url": "https://api.hh.ru/areas/159"},
+            "area": {
+                "id": "159",
+                "name": "Астана",
+                "url": "https://api.hh.ru/areas/159",
+            },
             "salary": {"from": 418500, "to": 1000000, "currency": "KZT", "gross": True},
             "type": {"id": "open", "name": "Открытая"},
             "address": {
@@ -1006,8 +1078,7 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Не важно есть опыт у тебя или нет, я могу точно сказать, что ты сможешь зарабатывать \
-                в этой сфере!!! ",
+                "requirement": "Не важно есть опыт у тебя или нет, я могу точно сказать, что ты сможешь зарабатывать в этой сфере!!! ",
                 "responsibility": None,
             },
             "contacts": None,
@@ -1016,7 +1087,12 @@ if __name__ == "__main__":
             "working_time_intervals": [],
             "working_time_modes": [],
             "accept_temporary": False,
-            "professional_roles": [{"id": "70", "name": "Менеджер по продажам, менеджер по работе с клиентами"}],
+            "professional_roles": [
+                {
+                    "id": "70",
+                    "name": "Менеджер по продажам, менеджер по работе с клиентами",
+                }
+            ],
             "accept_incomplete_resumes": False,
             "experience": {"id": "between1And3", "name": "От 1 года до 3 лет"},
             "employment": {"id": "full", "name": "Полная занятость"},
@@ -1031,8 +1107,17 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "2759", "name": "Ташкент", "url": "https://api.hh.ru/areas/2759"},
-            "salary": {"from": 2000000, "to": 2000000, "currency": "UZS", "gross": False},
+            "area": {
+                "id": "2759",
+                "name": "Ташкент",
+                "url": "https://api.hh.ru/areas/2759",
+            },
+            "salary": {
+                "from": 2000000,
+                "to": 2000000,
+                "currency": "UZS",
+                "gross": False,
+            },
             "type": {"id": "open", "name": "Открытая"},
             "address": {
                 "city": "Ташкент",
@@ -1067,10 +1152,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Если вы , в том числе, студент по направлению IT или начинающий специалист, \
-                окончивший вуз, Вы можете принять участие в отборе...",
-                "responsibility": "Комплексная оценка будет проводиться в форме собеседования. Стажировка по \
-                направлениям Java-backend и Mobile разработчик (flutter). Участие в непосредственной работе...",
+                "requirement": "Если вы , в том числе, студент по направлению IT или начинающий специалист, окончивший вуз, Вы можете принять участие в отборе...",
+                "responsibility": "Комплексная оценка будет проводиться в форме собеседования. Стажировка по направлениям Java-backend и Mobile разработчик (flutter). Участие в непосредственной работе...",
             },
             "contacts": None,
             "schedule": {"id": "fullDay", "name": "Полный день"},
@@ -1093,7 +1176,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "2", "name": "Санкт-Петербург", "url": "https://api.hh.ru/areas/2"},
+            "area": {
+                "id": "2",
+                "name": "Санкт-Петербург",
+                "url": "https://api.hh.ru/areas/2",
+            },
             "salary": {"from": 65000, "to": 70000, "currency": "RUR", "gross": False},
             "type": {"id": "open", "name": "Открытая"},
             "address": {
@@ -1130,8 +1217,7 @@ if __name__ == "__main__":
             },
             "snippet": {
                 "requirement": None,
-                "responsibility": "Cезонныe pаботы: убоpкa cнега, лиcтьев, кoшeниe травы, мытьe дoрoжек. Убoрка \
-                мусоpа. Прoтиpание пыли, уборка в бapбекю, в бecедке. ",
+                "responsibility": "Cезонныe pаботы: убоpкa cнега, лиcтьев, кoшeниe травы, мытьe дoрoжек. Убoрка мусоpа. Прoтиpание пыли, уборка в бapбекю, в бecедке. ",
             },
             "contacts": None,
             "schedule": {"id": "fullDay", "name": "Полный день"},
@@ -1185,10 +1271,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Опыт работы не требуется, мы всему научим! Опыт работы в сетевых розничных магазинах \
-                приветствуется.",
-                "responsibility": "Консультирование покупателей по ассортименту в магазине. Работа на современной и \
-                простой кассе. Выкладка продукции, оформление торгового зала рекламными материалами. ",
+                "requirement": "Опыт работы не требуется, мы всему научим! Опыт работы в сетевых розничных магазинах приветствуется.",
+                "responsibility": "Консультирование покупателей по ассортименту в магазине. Работа на современной и простой кассе. Выкладка продукции, оформление торгового зала рекламными материалами. ",
             },
             "contacts": None,
             "schedule": {"id": "shift", "name": "Сменный график"},
@@ -1196,7 +1280,9 @@ if __name__ == "__main__":
             "working_time_intervals": [],
             "working_time_modes": [],
             "accept_temporary": False,
-            "professional_roles": [{"id": "97", "name": "Продавец-консультант, продавец-кассир"}],
+            "professional_roles": [
+                {"id": "97", "name": "Продавец-консультант, продавец-кассир"}
+            ],
             "accept_incomplete_resumes": True,
             "experience": {"id": "noExperience", "name": "Нет опыта"},
             "employment": {"id": "full", "name": "Полная занятость"},
@@ -1211,7 +1297,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "160", "name": "Алматы", "url": "https://api.hh.ru/areas/160"},
+            "area": {
+                "id": "160",
+                "name": "Алматы",
+                "url": "https://api.hh.ru/areas/160",
+            },
             "salary": {"from": 180000, "to": 200000, "currency": "KZT", "gross": False},
             "type": {"id": "open", "name": "Открытая"},
             "address": None,
@@ -1241,10 +1331,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "умение урегулировать форс-мажорные ситуации. - умение работать в системе Битрикс \
-                для ведения процесса бронирования. Требования: - опыт работы в туризме обязателен. - ",
-                "responsibility": "консультирование клиентов по туристическим продуктам в офисе и по телефону. - \
-                обработка входящих заявок и ведение диалога с туристами. - ",
+                "requirement": "умение урегулировать форс-мажорные ситуации. - умение работать в системе Битрикс для ведения процесса бронирования. Требования: - опыт работы в туризме обязателен. - ",
+                "responsibility": "консультирование клиентов по туристическим продуктам в офисе и по телефону. - обработка входящих заявок и ведение диалога с туристами. - ",
             },
             "contacts": None,
             "schedule": {"id": "fullDay", "name": "Полный день"},
@@ -1267,8 +1355,17 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "2759", "name": "Ташкент", "url": "https://api.hh.ru/areas/2759"},
-            "salary": {"from": 4000000, "to": 8000000, "currency": "UZS", "gross": True},
+            "area": {
+                "id": "2759",
+                "name": "Ташкент",
+                "url": "https://api.hh.ru/areas/2759",
+            },
+            "salary": {
+                "from": 4000000,
+                "to": 8000000,
+                "currency": "UZS",
+                "gross": True,
+            },
             "type": {"id": "open", "name": "Открытая"},
             "address": None,
             "response_url": None,
@@ -1292,10 +1389,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Высшее профильное образование. Свободное владение русским и узбекским языками. \
-                Java Core. Spring/Spring Boot. Знание ООП и структуры данных. ",
-                "responsibility": "Разрабатывать новые и поддерживать существующие продукты компании. Интегрировать \
-                сервисы и API. Написание микросервисов. Интеграции с внешними сервисами по REST, WebSocket. ",
+                "requirement": "Высшее профильное образование. Свободное владение русским и узбекским языками. Java Core. Spring/Spring Boot. Знание ООП и структуры данных. ",
+                "responsibility": "Разрабатывать новые и поддерживать существующие продукты компании. Интегрировать сервисы и API. Написание микросервисов. Интеграции с внешними сервисами по REST, WebSocket. ",
             },
             "contacts": None,
             "schedule": {"id": "fullDay", "name": "Полный день"},
@@ -1391,11 +1486,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Высшее или средне-специальное образование. Опыт работы на позиции менеджер по \
-                закупкам от 3 лет. Знание программы 1С (Управление...",
-                "responsibility": "Получать и обрабатывать заявки. Обеспечивать своевременные поставки ТМЦ \
-                Заказчикам (закупка оборудования КИПиА и комплектующих). Контролировать поставки и своевременное \
-                выполнение обязанностей...",
+                "requirement": "Высшее или средне-специальное образование. Опыт работы на позиции менеджер по закупкам от 3 лет. Знание программы 1С (Управление...",
+                "responsibility": "Получать и обрабатывать заявки. Обеспечивать своевременные поставки ТМЦ Заказчикам (закупка оборудования КИПиА и комплектующих). Контролировать поставки и своевременное выполнение обязанностей...",
             },
             "contacts": None,
             "schedule": {"id": "fullDay", "name": "Полный день"},
@@ -1418,7 +1510,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "159", "name": "Астана", "url": "https://api.hh.ru/areas/159"},
+            "area": {
+                "id": "159",
+                "name": "Астана",
+                "url": "https://api.hh.ru/areas/159",
+            },
             "salary": {"from": 300000, "to": None, "currency": "KZT", "gross": False},
             "type": {"id": "open", "name": "Открытая"},
             "address": {
@@ -1454,8 +1550,7 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Знание английского языка (B2). Хорошие знание города ПДД. Готовность к \
-                командировкам, в том числе за границу. Пунктуальность. ",
+                "requirement": "Знание английского языка (B2). Хорошие знание города ПДД. Готовность к командировкам, в том числе за границу. Пунктуальность. ",
                 "responsibility": "Мелкосрочный ремонт авто.",
             },
             "contacts": None,
@@ -1479,7 +1574,11 @@ if __name__ == "__main__":
             "department": None,
             "has_test": False,
             "response_letter_required": False,
-            "area": {"id": "102", "name": "Хабаровск", "url": "https://api.hh.ru/areas/102"},
+            "area": {
+                "id": "102",
+                "name": "Хабаровск",
+                "url": "https://api.hh.ru/areas/102",
+            },
             "salary": {"from": 228000, "to": 228000, "currency": "RUR", "gross": False},
             "type": {"id": "open", "name": "Открытая"},
             "address": {
@@ -1520,10 +1619,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "Квалификационное удостоверение машиниста буровой установки 5 разряда. Опыт работы \
-                на буровой установки RU-75., LM-75. Проведение текущих аварийных и...",
-                "responsibility": "Бурение из буровых камер. Бурение согласно ГТН, умение подобрать \
-                породоразрушающий инструмент, монтаж на устье скважины.",
+                "requirement": "Квалификационное удостоверение машиниста буровой установки 5 разряда. Опыт работы на буровой установки RU-75., LM-75. Проведение текущих аварийных и...",
+                "responsibility": "Бурение из буровых камер. Бурение согласно ГТН, умение подобрать породоразрушающий инструмент, монтаж на устье скважины.",
             },
             "contacts": None,
             "schedule": {"id": "flyInFlyOut", "name": "Вахтовый метод"},
@@ -1571,11 +1668,8 @@ if __name__ == "__main__":
                 "trusted": True,
             },
             "snippet": {
-                "requirement": "опыт работы профессиональным водителем от 10 лет, семейным водителем - от 5 лет. \
-                - наличие рекомендательных писем (обязательно). - спокойное,комфортное и безопасное...",
-                "responsibility": "работа в качестве семейного водителя. - подача автомобиля по указанному месту в \
-                обозначенное время. - планирование оптимального маршрута движения. - выполнение поручений \
-                профессионального...",
+                "requirement": "опыт работы профессиональным водителем от 10 лет, семейным водителем - от 5 лет. - наличие рекомендательных писем (обязательно). - спокойное,комфортное и безопасное...",
+                "responsibility": "работа в качестве семейного водителя. - подача автомобиля по указанному месту в обозначенное время. - планирование оптимального маршрута движения. - выполнение поручений профессионального...",
             },
             "contacts": None,
             "schedule": {"id": "fullDay", "name": "Полный день"},
@@ -1640,8 +1734,7 @@ if __name__ == "__main__":
             },
             "snippet": {
                 "requirement": "Опыт в продажах или с клиентами. Грамотная речь. Активность. Коммуникабельность.",
-                "responsibility": "Работа с клиентами. Контроль остатков инструмента на складе. Работа с дебиторской \
-                задолженностью. Отчетность в установленной форме (1С, Битрикс 24).",
+                "responsibility": "Работа с клиентами. Контроль остатков инструмента на складе. Работа с дебиторской задолженностью. Отчетность в установленной форме (1С, Битрикс 24).",
             },
             "contacts": None,
             "schedule": {"id": "fullDay", "name": "Полный день"},
@@ -1649,7 +1742,12 @@ if __name__ == "__main__":
             "working_time_intervals": [],
             "working_time_modes": [],
             "accept_temporary": False,
-            "professional_roles": [{"id": "70", "name": "Менеджер по продажам, менеджер по работе с клиентами"}],
+            "professional_roles": [
+                {
+                    "id": "70",
+                    "name": "Менеджер по продажам, менеджер по работе с клиентами",
+                }
+            ],
             "accept_incomplete_resumes": False,
             "experience": {"id": "between1And3", "name": "От 1 года до 3 лет"},
             "employment": {"id": "full", "name": "Полная занятость"},
@@ -1659,7 +1757,9 @@ if __name__ == "__main__":
         },
     ]
 
-    print("Проведём валидацию этого списка и внутри класса Vacancy создадим экземпляры класса")
+    print(
+        "Проведём валидацию этого списка и внутри класса Vacancy создадим экземпляры класса"
+    )
     validated_vacancies = [validator.validate(item) for item in hh_vacancies]
     Vacancy.cast_to_object_list(validated_vacancies)
 
@@ -1680,6 +1780,8 @@ if __name__ == "__main__":
     print()
 
     salary_range = "500000 - 1000000"
-    print(f"Выведем на экран список вакансий отфильтрованных по диапазону зарплат {salary_range}")
+    print(
+        f"Выведем на экран список вакансий отфильтрованных по диапазону зарплат {salary_range}"
+    )
     Vacancy.filter_vacancies_by_salary_diapason(salary_range)
     print()

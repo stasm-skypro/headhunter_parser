@@ -33,10 +33,10 @@ class HeadHunterAPI(BaseAPI):
         """
         self.__url = url
         self.__headers = {"User-Agent": "HH-User-Agent"}
-        self.__params = {"text": "", "page": 0, "per_page": per_page, "items": [{}]}
+        self.__params = {"text": "", "page": 0, "per_page": per_page}
         self.__vacancies: list = []
 
-    def __connect_to_api(self):
+    def __connect_to_api(self) -> requests.models.Response | None:
         """
         Метод для подключения к API и проверки статус-кода.
         @return:
@@ -61,7 +61,9 @@ class HeadHunterAPI(BaseAPI):
             return []
 
         self.__params["text"] = keyword
-        response = requests.get(self.__url, headers=self.__headers, params=self.__params)
+        response = requests.get(
+            self.__url, headers=self.__headers, params=self.__params
+        )
         vacancies = response.json()
         self.__vacancies = vacancies.get("items", [])
 
@@ -69,7 +71,6 @@ class HeadHunterAPI(BaseAPI):
 
 
 if __name__ == "__main__":
-
     # Создание экземпляра класса для работы с API сайтов с вакансиями
     print("Получим сырые данные из API")
     hh_api = HeadHunterAPI(url=BASE_URL, per_page=100)

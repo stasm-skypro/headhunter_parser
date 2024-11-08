@@ -3,7 +3,7 @@ from src.vacancy import Vacancy
 
 
 class JsonSaver:
-    """Класс принимает объект класса Vacancy. Из параметров экземпляра класса Vacancy создаётся json-объект."""
+    """Класс принимает объект класса Vacancy и из параметров экземпляра класса создаёт json-объект."""
 
     json_list: list[dict] = []  # Список вакансий
 
@@ -134,7 +134,9 @@ if __name__ == "__main__":
         "schedule": {"id": "remote", "name": "Удаленная работа"},
         "working_days": [],
         "working_time_intervals": [],
-        "working_time_modes": [{"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}],
+        "working_time_modes": [
+            {"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}
+        ],
         "accept_temporary": False,
         "professional_roles": [{"id": "40", "name": "Другое"}],
         "accept_incomplete_resumes": True,
