@@ -234,12 +234,12 @@ def user_interaction() -> None:
     user_input = input(
         "Введите количество вакансий для вывода в топ N по зарплате (default 5) >>: "
     )
-    top_n = 5 if not user_input else user_input
+    top_n = 5 if not user_input else int(user_input)
 
     user_input = input(
         "Введите ключевые слова для фильтрации вакансий (Пример: back-end стажер) >>: "
-    ).split()  # Пример: back-end стажер
-    filter_words = ["back-end", "стажер"] if not user_input else user_input
+    )  # Пример: back-end стажер
+    filter_words = ["back-end", "стажер"] if not user_input else user_input.split()
 
     user_input = input(
         "Введите диапазон зарплат (Пример: 100000 - 150000) >>: "

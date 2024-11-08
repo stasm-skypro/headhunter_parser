@@ -2,6 +2,7 @@ import csv
 import json
 import os
 from abc import ABC, abstractmethod
+from typing import Any
 
 import pandas as pd
 
@@ -47,10 +48,10 @@ class JsonWorker(FileWorker):
         @return: None
         """
         full_path = os.path.abspath(self.__file_name)
-        with open(full_path, "w", encoding="UTF-8") as file:
+        with open(full_path, "a", encoding="UTF-8") as file:
             json.dump(data, file, ensure_ascii=False)
 
-    def read_file(self) -> list[dict]:
+    def read_file(self) -> list[dict] | Any:
         """
         Читает содержимое json-файла в json-объект (список словарей).
         @return: JSON-объект (список словарей).
@@ -90,7 +91,7 @@ class CsvWorker(FileWorker):
         """
         field_names = self.get_field_names(data)
         full_path = os.path.abspath(self.__file_name)
-        with open(full_path, "w", newline="", encoding="UTF-8") as file:
+        with open(full_path, "a", newline="", encoding="UTF-8") as file:
             writer = csv.DictWriter(file, fieldnames=field_names)
             writer.writeheader()
             for row_dict in data:

@@ -31,7 +31,7 @@ def test_connect_to_api(mock_get: MagicMock, hh_api: MagicMock) -> None:
 
 
 @patch("src.headhunter_api.requests.get")
-def test_load_vacancies(mock_get, hh_api) -> None:
+def test_load_vacancies(mock_get: MagicMock, hh_api: MagicMock) -> None:
     """
     Проверяем получение данных из API.
     @param mock_get: Заглушка для метода requests.get.

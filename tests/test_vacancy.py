@@ -1,4 +1,5 @@
 import pytest
+
 from src.vacancy import Vacancy
 
 
@@ -179,3 +180,18 @@ def test_filter_vacancies_by_salary_diapason(sample_vacancy_params: dict) -> Non
     assert len(Vacancy.obj_vacancies_list) == 15
     assert Vacancy.obj_vacancies_list[0].salary_from == 350000
     assert Vacancy.obj_vacancies_list[0].salary_to == 450000
+
+
+def test_delete_vacancy(sample_vacancy_params: dict) -> None:
+    """
+    Проверяет удаление вакансии.
+    @param sample_vacancy_params: Фикстура параметров вакансии.
+    @param id: Строковый аргумент - идентификатор вакансии в списке вакансий.
+    @return: None
+    """
+    Vacancy.obj_vacancies_list = []
+    vacancies_data = [sample_vacancy_params]
+    Vacancy.cast_to_object_list(vacancies_data)
+    assert Vacancy.obj_vacancies_list[0].id == "1"
+    Vacancy.delete_vacancy("1")
+    assert Vacancy.obj_vacancies_list == []

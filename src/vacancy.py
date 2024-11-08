@@ -317,6 +317,25 @@ class Vacancy:
         if save_result and filtered_vacancies_list:
             cls.__list_dicts_to_obj_vacancies_list(filtered_vacancies_list)
 
+    @classmethod
+    def delete_vacancy(cls, id: str) -> None:
+        """
+        Удаляет вакансию по номеру ID.
+        @param id: Уникальный идентификатор вакансии.
+        @return: None
+        """
+        # Сохраним список вакансий из списка объектов вакансий
+        tmp_vacancies_list = cls.__obj_vacancies_list_to_list_dicts()
+
+        # Удалим вакансию с номером id
+        for vacancy in tmp_vacancies_list:
+            if vacancy['id'] == id:
+                tmp_vacancies_list.remove(vacancy)
+                break
+
+        # Сохраним изменённый список вакансий в список объектов вакансий.
+        cls.__list_dicts_to_obj_vacancies_list(tmp_vacancies_list)
+
 
 if __name__ == "__main__":
     validator = Validator()
@@ -1784,4 +1803,9 @@ if __name__ == "__main__":
         f"Выведем на экран список вакансий отфильтрованных по диапазону зарплат {salary_range}"
     )
     Vacancy.filter_vacancies_by_salary_diapason(salary_range)
+    print()
+
+    print("Удалим вакансию с id='93353083'")  # Первая вакансия в списке - Тестировщик комфорта...
+    Vacancy.delete_vacancy('93353083')
+    Vacancy.print_obj_vacancies_list()
     print()
