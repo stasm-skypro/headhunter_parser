@@ -21,9 +21,7 @@ def test_connect_to_api(mock_get: MagicMock, hh_api: MagicMock) -> None:
     @return:
     """
     mock_response = mock_get.return_value  # Заглушка для имитации валидного ответа.
-    mock_response.raise_for_status.return_value = (
-        None  # Заглушка для имитации ответа None из метода __connect_to_api.
-    )
+    mock_response.raise_for_status.return_value = None  # Заглушка для имитации ответа None из метода __connect_to_api.
 
     response = hh_api._HeadHunterAPI__connect_to_api()
     assert response is not None

@@ -33,7 +33,7 @@ class HeadHunterAPI(BaseAPI):
         """
         self.__url = url
         self.__headers = {"User-Agent": "HH-User-Agent"}
-        self.__params = {"text": "", "page": 0, "per_page": per_page}
+        self.__params = {"text": "", "page": 0, "per_page": per_page, "only_with_salary": True}
         self.__vacancies: list = []
 
     def __connect_to_api(self) -> requests.models.Response | None:
@@ -61,9 +61,7 @@ class HeadHunterAPI(BaseAPI):
             return []
 
         self.__params["text"] = keyword
-        response = requests.get(
-            self.__url, headers=self.__headers, params=self.__params
-        )
+        response = requests.get(self.__url, headers=self.__headers, params=self.__params)
         vacancies = response.json()
         self.__vacancies = vacancies.get("items", [])
 

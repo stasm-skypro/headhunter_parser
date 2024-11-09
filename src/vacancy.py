@@ -21,7 +21,7 @@ class Validator:
     @staticmethod
     def validate(vacancy_params: dict) -> dict:
         """
-        Производит выборку по ключам словаря вакансии и создаёт новых словарь с выбранными ключами и их значениями.
+        Производит выборку по ключам словаря вакансии и создаёт новый словарь с выбранными ключами и их значениями.
         @param vacancy_params: Содержит параметры одной вакансии.
         @return: Отобранные и валидные параметры одной вакансии.
         """
@@ -61,12 +61,8 @@ class Validator:
                         new_vacancy_params["requirement"] = 0
                         new_vacancy_params["responsibility"] = 0
                     else:
-                        new_vacancy_params["requirement"] = vacancy_params[key][
-                            "requirement"
-                        ]
-                        new_vacancy_params["responsibility"] = vacancy_params[key][
-                            "responsibility"
-                        ]
+                        new_vacancy_params["requirement"] = vacancy_params[key]["requirement"]
+                        new_vacancy_params["responsibility"] = vacancy_params[key]["responsibility"]
 
                 elif key == "apply_alternate_url":
                     new_vacancy_params["url"] = value
@@ -182,9 +178,7 @@ class Vacancy:
             print(vacancy)
 
     @staticmethod
-    def print_vacancies_list(
-        data: list[dict], rows_to_print: int | None = None
-    ) -> None:
+    def print_vacancies_list(data: list[dict], rows_to_print: int | None = None) -> None:
         """
         Выводит на экран список вакансий (список словарей).
         @param data: Список вакансий (список словарей).
@@ -223,9 +217,7 @@ class Vacancy:
             cls(current_dict)
 
     @classmethod
-    def sort_vacancies_by_keyword(
-        cls, key_word: str, top_n: int = 1, save_result: bool = False
-    ) -> None:
+    def sort_vacancies_by_keyword(cls, key_word: str, top_n: int = 1, save_result: bool = False) -> None:
         """
         Сортирует список вакансий по заданному ключевому слову.
         @param key_word: Определяет ключ, по которому будет производиться сортировка.
@@ -239,9 +231,7 @@ class Vacancy:
 
         # Производим сортировку
         try:
-            sorted_vacancies_list = sorted(
-                tmp_vacancies_list, key=lambda x: x[key_word], reverse=True
-            )
+            sorted_vacancies_list = sorted(tmp_vacancies_list, key=lambda x: x[key_word], reverse=True)
         except KeyError:
             print(f"Ключевое слово '{key_word}' не найдено в списке вакансий!")
         else:
@@ -254,9 +244,7 @@ class Vacancy:
             cls.__list_dicts_to_obj_vacancies_list(sorted_vacancies_list)
 
     @classmethod
-    def filter_vacancies_by_keyword(
-        cls, words: list[str], save_result: bool = False
-    ) -> None:
+    def filter_vacancies_by_keyword(cls, words: list[str], save_result: bool = False) -> None:
         """
         Фильтрует список вакансий по заданному ключевому слову.
         @param words: Ключевые слова, по которым будет производиться фильтрование.
@@ -285,9 +273,7 @@ class Vacancy:
             cls.__list_dicts_to_obj_vacancies_list(filtered_vacancies_list)
 
     @classmethod
-    def filter_vacancies_by_salary_diapason(
-        cls, srange: str, save_result: bool = False
-    ) -> None:
+    def filter_vacancies_by_salary_diapason(cls, srange: str, save_result: bool = False) -> None:
         """
         Фильтрует список вакансий по диапазону зарплат.
         @param srange: Определяет диапазон зарплат.
@@ -302,9 +288,7 @@ class Vacancy:
         try:
             left, right = srange.split("-")
             for vacancy in tmp_vacancies_list:
-                if vacancy["salary_from"] == int(left.strip()) and vacancy[
-                    "salary_to"
-                ] == int(right.strip()):
+                if vacancy["salary_from"] == int(left.strip()) and vacancy["salary_to"] == int(right.strip()):
                     filtered_vacancies_list.append(vacancy)
         except KeyError:
             print(f"Диапазон {srange} не найден в списке вакансий!")
@@ -329,7 +313,7 @@ class Vacancy:
 
         # Удалим вакансию с номером id
         for vacancy in tmp_vacancies_list:
-            if vacancy['id'] == id:
+            if vacancy["id"] == id:
                 tmp_vacancies_list.remove(vacancy)
                 break
 
@@ -451,9 +435,7 @@ if __name__ == "__main__":
         "schedule": {"id": "remote", "name": "Удаленная работа"},
         "working_days": [],
         "working_time_intervals": [],
-        "working_time_modes": [
-            {"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}
-        ],
+        "working_time_modes": [{"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}],
         "accept_temporary": False,
         "professional_roles": [{"id": "40", "name": "Другое"}],
         "accept_incomplete_resumes": True,
@@ -478,9 +460,7 @@ if __name__ == "__main__":
     Vacancy.print_obj_vacancies_list()
     print()
 
-    print(
-        "Внутри класса Vacancy из json-объекта создадим список объектов вакансий и выведем его на экран"
-    )
+    print("Внутри класса Vacancy из json-объекта создадим список объектов вакансий и выведем его на экран")
     print("Есть список сырых вакансий, полученных из API")
     hh_vacancies = [
         {
@@ -907,9 +887,7 @@ if __name__ == "__main__":
                 }
             ],
             "accept_temporary": False,
-            "professional_roles": [
-                {"id": "84", "name": "Оператор ПК, оператор базы данных"}
-            ],
+            "professional_roles": [{"id": "84", "name": "Оператор ПК, оператор базы данных"}],
             "accept_incomplete_resumes": False,
             "experience": {"id": "noExperience", "name": "Нет опыта"},
             "employment": {"id": "part", "name": "Частичная занятость"},
@@ -1299,9 +1277,7 @@ if __name__ == "__main__":
             "working_time_intervals": [],
             "working_time_modes": [],
             "accept_temporary": False,
-            "professional_roles": [
-                {"id": "97", "name": "Продавец-консультант, продавец-кассир"}
-            ],
+            "professional_roles": [{"id": "97", "name": "Продавец-консультант, продавец-кассир"}],
             "accept_incomplete_resumes": True,
             "experience": {"id": "noExperience", "name": "Нет опыта"},
             "employment": {"id": "full", "name": "Полная занятость"},
@@ -1776,9 +1752,7 @@ if __name__ == "__main__":
         },
     ]
 
-    print(
-        "Проведём валидацию этого списка и внутри класса Vacancy создадим экземпляры класса"
-    )
+    print("Проведём валидацию этого списка и внутри класса Vacancy создадим экземпляры класса")
     validated_vacancies = [validator.validate(item) for item in hh_vacancies]
     Vacancy.cast_to_object_list(validated_vacancies)
 
@@ -1799,13 +1773,11 @@ if __name__ == "__main__":
     print()
 
     salary_range = "500000 - 1000000"
-    print(
-        f"Выведем на экран список вакансий отфильтрованных по диапазону зарплат {salary_range}"
-    )
+    print(f"Выведем на экран список вакансий отфильтрованных по диапазону зарплат {salary_range}")
     Vacancy.filter_vacancies_by_salary_diapason(salary_range)
     print()
 
     print("Удалим вакансию с id='93353083'")  # Первая вакансия в списке - Тестировщик комфорта...
-    Vacancy.delete_vacancy('93353083')
+    Vacancy.delete_vacancy("93353083")
     Vacancy.print_obj_vacancies_list()
     print()

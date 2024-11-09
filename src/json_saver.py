@@ -1,4 +1,3 @@
-from src.file_worker import JsonWorker, CsvWorker, ExcelWorker
 from src.vacancy import Vacancy
 
 
@@ -20,6 +19,7 @@ class JsonSaver:
 
 if __name__ == "__main__":
     from src.vacancy import Validator
+    from src.file_worker import JsonWorker, CsvWorker, ExcelWorker
 
     validator = Validator()
 
@@ -134,9 +134,7 @@ if __name__ == "__main__":
         "schedule": {"id": "remote", "name": "Удаленная работа"},
         "working_days": [],
         "working_time_intervals": [],
-        "working_time_modes": [
-            {"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}
-        ],
+        "working_time_modes": [{"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}],
         "accept_temporary": False,
         "professional_roles": [{"id": "40", "name": "Другое"}],
         "accept_incomplete_resumes": True,

@@ -12,9 +12,7 @@ BASE_URL = "https://api.hh.ru/vacancies"
 # Пример работы конструктора класса с одной вакансией
 print("#" + "*" * 100)
 print("Пример работы классов Validator и Vacancy с одной вакансией")
-print(
-    "Полученные из API в виде json-объекта вакансии нуждаются в валидации (удаление ненужных ключей и реформат)"
-)
+print("Полученные из API в виде json-объекта вакансии нуждаются в валидации (удаление ненужных ключей и реформат)")
 print("Для решения этой задачи создан класс Validator")
 print("Описание класса Validator:")
 print(Validator.__doc__)
@@ -131,9 +129,7 @@ pd2 = {
     "schedule": {"id": "remote", "name": "Удаленная работа"},
     "working_days": [],
     "working_time_intervals": [],
-    "working_time_modes": [
-        {"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}
-    ],
+    "working_time_modes": [{"id": "start_after_sixteen", "name": "Можно начинать работать после 16:00"}],
     "accept_temporary": False,
     "professional_roles": [{"id": "40", "name": "Другое"}],
     "accept_incomplete_resumes": True,
@@ -165,9 +161,7 @@ print()
 
 # Сохранение информации о вакансиях в файл
 print("Сохранение информации о вакансиях в файл")
-print(
-    "Алгоритм записи в файл: из экземпляра класса Vacancy создаём json-объект и затем записываем его в файл"
-)
+print("Алгоритм записи в файл: из экземпляра класса Vacancy создаём json-объект и затем записываем его в файл")
 print("Создадим конструктор класса JsonSaver")
 json_saver = JsonSaver()
 print("Запишем первый экземпляр класса Vacancy в json-объект")
@@ -223,17 +217,13 @@ def user_interaction() -> None:
     # -----------------------------------------------------------------------------------------------------------------
     print("Сначала запросим у пользователя входные данные для запроса")
     time.sleep(2)
-    user_input = input(
-        "Введите поисковый запрос (default 'Python') >>: "
-    )  # Пример: "Python"
+    user_input = input("Введите поисковый запрос (default 'Python') >>: ")  # Пример: "Python"
     keyword = "Python" if not user_input else user_input
 
     user_input = input("Ведите количество желаемых страниц (default 100) >>: ")
     vacancies_number = 100 if not user_input else int(user_input)
 
-    user_input = input(
-        "Введите количество вакансий для вывода в топ N по зарплате (default 5) >>: "
-    )
+    user_input = input("Введите количество вакансий для вывода в топ N по зарплате (default 5) >>: ")
     top_n = 5 if not user_input else int(user_input)
 
     user_input = input(
@@ -241,9 +231,7 @@ def user_interaction() -> None:
     )  # Пример: back-end стажер
     filter_words = ["back-end", "стажер"] if not user_input else user_input.split()
 
-    user_input = input(
-        "Введите диапазон зарплат (Пример: 100000 - 150000) >>: "
-    )  # Пример: 100000 - 150000
+    user_input = input("Введите диапазон зарплат (Пример: 100000 - 150000) >>: ")  # Пример: 100000 - 150000
     salary_range = "100000 - 150000" if not user_input else user_input
     print()
     # -----------------------------------------------------------------------------------------------------------------
@@ -323,9 +311,7 @@ def user_interaction() -> None:
     print()
 
     # Выведем на экран список ТОП вакансий отсортированных по заработной плате
-    print(
-        f"Отсортируем вакансии по заработной плате и выведем на экран ТОП-{top_n} вакансий"
-    )
+    print(f"Отсортируем вакансии по заработной плате и выведем на экран ТОП-{top_n} вакансий")
     Vacancy.sort_vacancies_by_keyword("salary_from", top_n)
     print()
 
@@ -335,9 +321,7 @@ def user_interaction() -> None:
     print()
 
     # Выведем на экран список вакансий отфильтрованный по диапазону зарплат
-    print(
-        f"Выведем на экран список вакансий отфильтрованных по диапазону зарплат {salary_range}"
-    )
+    print(f"Выведем на экран список вакансий отфильтрованных по диапазону зарплат {salary_range}")
     Vacancy.filter_vacancies_by_salary_diapason(salary_range)
     print()
 

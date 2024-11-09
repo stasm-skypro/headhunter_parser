@@ -1,5 +1,5 @@
 import pytest
-from src.vacancy import Validator  # Замените your_module на имя вашего модуля
+from src.vacancy import Validator
 
 
 @pytest.fixture
